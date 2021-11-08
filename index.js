@@ -14,7 +14,7 @@ async function run() {
 
   try {
     const registries = core.getInput('registries', { required: false });
-    const client = new ecr.client
+    const client = new ecr.client({ region: 'us-east-1' })
     // Get the ECR authorization token
     // const ecr = new aws.ECR({
     //   customUserAgent: 'amazon-ecr-login-for-github-actions'
