@@ -1,6 +1,8 @@
 const core = require('@actions/core');
 const exec = require('@actions/exec');
 const aws = require('aws-sdk');
+const ecr = "@aws-sdk/client-ecr";
+
 
 function replaceSpecialCharacters(registryUri) {
   return registryUri.replace(/[^a-zA-Z0-9_]+/g, '_')
@@ -12,11 +14,11 @@ async function run() {
 
   try {
     const registries = core.getInput('registries', { required: false });
-
+    const client = new ecr.client
     // Get the ECR authorization token
-    const ecr = new aws.ECR({
-      customUserAgent: 'amazon-ecr-login-for-github-actions'
-    });
+    // const ecr = new aws.ECR({
+    //   customUserAgent: 'amazon-ecr-login-for-github-actions'
+    // });
     const authTokenRequest = {};
     if (registries) {
       const registryIds = registries.split(',');
@@ -26,7 +28,7 @@ async function run() {
       }
       authTokenRequest.registryIds = registryIds;
     }
-    const authTokenResponse = await ecr.getAuthorizationToken(authTokenRequest).promise();
+    const authTokenResponse = await client.getAuthorizationToken(authTokenRequest).promise();
     if (!Array.isArray(authTokenResponse.authorizationData) || !authTokenResponse.authorizationData.length) {
       throw new Error('Could not retrieve an authorization token from Amazon ECR');
     }
