@@ -2755,18 +2755,18 @@ async function run() {
       }
       authTokenRequest.registryIds = registryIds;
     }
-    const authTokenResponse = await results(authTokenRequest).promise();
-    if (!Array.isArray(authTokenResponse.authorizationData) || !authTokenResponse.authorizationData.length) {
-      throw new Error('Could not retrieve an authorization token from Amazon ECR');
-    }
+    // const authTokenResponse = results;
+    // if (!Array.isArray(authTokenResponse.authorizationData) || !authTokenResponse.authorizationData.length) {
+    //   throw new Error('Could not retrieve an authorization token from Amazon ECR');
+    // }
 
-    for (const authData of authTokenResponse.authorizationData) {
+    for (const authData of results.authorizationData) {
       const authToken = Buffer.from(authData.authorizationToken, 'base64').toString('utf-8');
       const creds = authToken.split(':', 2);
       const proxyEndpoint = authData.proxyEndpoint;
       const registryUri = proxyEndpoint.replace(/^https?:\/\//,'');
 
-      if (authTokenResponse.authorizationData.length == 1) {
+      if (results.authorizationData.length == 1) {
         // output the registry URI if this action is doing a single registry login
         core.setOutput('registry', registryUri);
       }
